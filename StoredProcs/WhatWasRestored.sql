@@ -40,11 +40,7 @@ INNER JOIN msdb.dbo.backupset bs ON BS.backup_set_id = r1.backup_set_id
 INNER JOIN msdb.dbo.backupmediafamily bmf ON bs.media_set_id = bmf.media_set_id
 WHERE ((bs.database_name like @DBName) or (@DBName is NULL))
 AND ((bs.type = 'D') or  (@FullBackupsOnly = 0))
-ORDER by r1.restore_date DESC
- OPTION
-    (
-    RECOMPILE
-    );
+ORDER by r1.restore_date DESC;
 END
 
 GO
