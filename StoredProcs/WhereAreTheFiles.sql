@@ -38,12 +38,7 @@ BEGIN
           LEFT JOIN tempdb.sys.database_files tdf
           ON tdf.file_id = smf.file_id AND smf.database_id = 2
      WHERE (DB_NAME(smf.[database_id]) like @DBName) or (@DBName is NULL)
-     ORDER BY smf.physical_name , DB_NAME(smf.[database_id])
-     OPTION
-     (
-     RECOMPILE
-     );
-
+     ORDER BY smf.physical_name , DB_NAME(smf.[database_id]);
 END
 
 GO
