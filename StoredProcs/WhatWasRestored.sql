@@ -10,17 +10,17 @@ GO
    
    Procedure :	sp_WhatWasRestored
    
-   Version   :	2.1
-   Last Amended : 11th April 2023 
+   Version   :	2.2
+   Last Amended : 16th June 2023 
 
    Description:	Display details of latest DB restore including file used
 
-   Parameters :   @DBName (optional) 
-				Database Name
-   				NULL for all (default)
-		      @FullBackupsOnly (optional) 
-				0 for all latest backups (default)
-				1 for details of Full Backup Restores only
+   Parameters :	@DBName (optional) 
+				  Database Name
+   				  NULL for all (default)
+				@FullBackupsOnly (optional) 
+				  0 for all latest backups (default)
+				  1 for details of Full Backup Restores only
 
    Usage :		EXEC sp_WhatWasRestored
 				@DBName = 'MyDB' , @FullBackupsOnly = 1
@@ -38,7 +38,7 @@ SELECT top 1000 r1.destination_database_name AS [Restored Database]
 FROM msdb.dbo.restorehistory r1
 INNER JOIN msdb.dbo.backupset bs ON BS.backup_set_id = r1.backup_set_id
 INNER JOIN msdb.dbo.backupmediafamily bmf ON bs.media_set_id = bmf.media_set_id
-WHERE ((bs.database_name like @DBName) or (@DBName is NULL))
+WHERE ((r1.destination_database_name like @DBName) or (@DBName is NULL))
 AND ((bs.type = 'D') or  (@FullBackupsOnly = 0))
 ORDER by r1.restore_date DESC;
 END
