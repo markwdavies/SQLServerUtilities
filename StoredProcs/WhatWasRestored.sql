@@ -10,8 +10,8 @@ GO
    
    Procedure :	sp_WhatWasRestored
    
-   Version   :	2.2
-   Last Amended : 16th June 2023 
+   Version   :	2.3
+   Last Amended : 29th August 2023 
 
    Description:	Display details of latest DB restore including file used
 
@@ -36,7 +36,7 @@ SELECT top 1000 r1.destination_database_name AS [Restored Database]
 	  , CASE bs.[type] WHEN 'D' THEN 'Full' WHEN 'I' THEN 'Differential' WHEN 'L' THEN 'Transaction Log' ELSE 'Not Known' END AS [Backup File Type]
       , r1.[stop_at] 
 FROM msdb.dbo.restorehistory r1
-INNER JOIN msdb.dbo.backupset bs ON BS.backup_set_id = r1.backup_set_id
+INNER JOIN msdb.dbo.backupset bs ON bs.backup_set_id = r1.backup_set_id
 INNER JOIN msdb.dbo.backupmediafamily bmf ON bs.media_set_id = bmf.media_set_id
 WHERE ((r1.destination_database_name like @DBName) or (@DBName is NULL))
 AND ((bs.type = 'D') or  (@FullBackupsOnly = 0))
