@@ -13,14 +13,13 @@ GO
    Version   :	2.3
    Last Amended : 29th August 2023 
 
-   Description:	Display details of latest DB restore including file used
+   Description:	Display details of latest DB restores including source
 
-   Parameters :	@DBName (optional) 
-				  Database Name
-   				  NULL for all (default)
-				@FullBackupsOnly (optional) 
-				  0 for all latest backups (default)
-				  1 for details of Full Backup Restores only
+   Parameters :	@DBName (optional) Restored Database Name 
+                     NULL for all (default)
+				      @FullBackupsOnly (optional) 
+				         0 for all latest backups (default)
+				         1 for details of Full Backup Restores only
 
    Usage :		EXEC sp_WhatWasRestored
 				@DBName = 'MyDB' , @FullBackupsOnly = 1

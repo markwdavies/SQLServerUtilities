@@ -47,7 +47,7 @@ BEGIN
 	INNER JOIN msdb.dbo.backupmediafamily bmf ON bs.media_set_id = bmf.media_set_id
 	WHERE ((bs.database_name like @DBName) or (@DBName is NULL))
 	AND ((bs.type = 'D') or  (@FullBackupsOnly = 0))
-	ORDER BY backup_start_date DESC, backup_finish_date;
+	ORDER BY backup_start_date DESC;
 END
 
 GO
