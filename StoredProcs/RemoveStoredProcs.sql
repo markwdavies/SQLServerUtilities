@@ -12,7 +12,6 @@ GO
                   this repository
 
    ===================================================================================== */
-IF EXISTS (SELECT 1 FROM sys.procedures WHERE name = 'sp_WhatAreMyLuckyNumbers') DROP PROC [sp_WhatAreMyLuckyNumbers] ;
 IF EXISTS (SELECT 1 FROM sys.procedures WHERE name = 'sp_WhatWasRestored') DROP PROC [sp_WhatWasRestored] ;
 IF EXISTS (SELECT 1 FROM sys.procedures WHERE name = 'sp_WhereAreTheBackups') DROP PROC [sp_WhereAreTheBackups] ;
 IF EXISTS (SELECT 1 FROM sys.procedures WHERE name = 'sp_WhereAreTheFiles') DROP PROC [sp_WhereAreTheFiles] ;
