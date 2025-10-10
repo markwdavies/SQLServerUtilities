@@ -10,7 +10,7 @@ GO
    
    Procedure :	sp_WhatIsRunning
    
-   Version   :	2.2 (in progress)
+   Version   :	2.2
    Last Amended : 15th May 2025
 
    Description:	Display details of sessions
