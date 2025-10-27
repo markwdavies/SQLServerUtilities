@@ -47,7 +47,7 @@ SELECT  t1.session_id ,
                                                     END - t2.statement_start_offset ) / 2)
                                 FROM    sys.dm_exec_sql_text(t2.sql_handle)
                               ), 'Not currently executing') ,
-        query_plan = ( SELECT query_planFROM     sys.dm_exec_query_plan(t2.plan_handle)
+        query_plan = ( SELECT query_plan FROM sys.dm_exec_query_plan(t2.plan_handle)
                       )
 FROM    ( SELECT session_id ,
                  request_id ,
