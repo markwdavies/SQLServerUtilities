@@ -10,20 +10,21 @@ GO
    
    Procedure :	sp_WhatIsUsingTempDB
    
-   Version   :	1.0 (draft)
+   Version   :	1.0
    Last Amended : October 2025
 
    Description:	Display details of sessions
-                optionally limit output to backups/restores and/or active sessions only
+                limit output to user sessions , optionally include system sessions as well
 
    Parameters : @UserOnly
-					0 (default) exclude system processes
-					1  everything
+					1 (default) exclude system sessions
+					0  everything
 				
-   Usage :		EXEC sp_WhatIsUsingTempDB
+   Usage :		EXEC sp_WhatIsUsingTempDB 
+					@UserOnly = 1
 
    ===================================================================================== */
-CREATE PROCEDURE [dbo].[sp_WhatIsUsingTempDB] (@UserOnly bit = 0)
+CREATE PROCEDURE [dbo].[sp_WhatIsUsingTempDB] (@UserOnly bit = 1)
 
 AS
 
@@ -47,8 +48,7 @@ SELECT  t1.session_id ,
                                                     END - t2.statement_start_offset ) / 2)
                                 FROM    sys.dm_exec_sql_text(t2.sql_handle)
                               ), 'Not currently executing') ,
-        query_plan = ( SELECT query_planFROM     sys.dm_exec_query_plan(t2.plan_handle)
-                      )
+        query_plan = (SELECT query_plan FROM sys.dm_exec_query_plan(t2.plan_handle))
 FROM    ( SELECT session_id ,
                  request_id ,
                  task_alloc_pages = SUM(internal_objects_alloc_page_count + user_objects_alloc_page_count) ,
@@ -60,7 +60,7 @@ FROM    ( SELECT session_id ,
         LEFT JOIN sys.dm_exec_requests AS t2 ON t1.session_id = t2.session_id
                                                 AND t1.request_id = t2.request_id
         LEFT JOIN sys.dm_exec_sessions AS s1 ON t1.session_id = s1.session_id
-WHERE   ((t1.session_id > 50) or (@UserOnly = 1))
+WHERE   ((t1.session_id > 50) or (@UserOnly = 0))
         AND t1.session_id != @@SPID -- ignore this request itself
 ORDER BY t1.task_alloc_pages DESC;
 
