@@ -1,10 +1,17 @@
 USE [master]
 GO
+
 /* ------ -- ------- -- ------ ------ ----
    script to install or update stored proc 
    ------ -- ------- -- ------ ------ ---- */
-IF EXISTS (SELECT 1 FROM sys.procedures WHERE name = 'sp_WhatWasRestored') DROP PROC [sp_WhatWasRestored]
+IF EXISTS (
+        SELECT 1
+        FROM sys.procedures
+        WHERE name = 'sp_WhatWasRestored'
+        )
+    DROP PROC [sp_WhatWasRestored]
 GO
+
 /* =====================================================================================
    https://github.com/markwdavies/SQLServerUtilities/StoredProcs
    
@@ -24,22 +31,38 @@ GO
    Usage :		EXEC sp_WhatWasRestored
 				@DBName = 'MyDB' , @FullBackupsOnly = 1
    ===================================================================================== */
-CREATE PROCEDURE [dbo].[sp_WhatWasRestored]
-     (@DBName NVARCHAR(128) = NULL , @FullBackupsOnly bit = 0)
+CREATE PROCEDURE [dbo].[sp_WhatWasRestored] (
+    @DBName NVARCHAR(128) = NULL
+    ,@FullBackupsOnly BIT = 0
+    )
 AS
-
 BEGIN
-SELECT top 1000 r1.destination_database_name AS [Restored Database]
-      , r1.restore_date AS [Restore Date]
-	  , bmf.physical_device_name AS [Backup File Restored]
-	  , CASE bs.[type] WHEN 'D' THEN 'Full' WHEN 'I' THEN 'Differential' WHEN 'L' THEN 'Transaction Log' ELSE 'Not Known' END AS [Backup File Type]
-      , r1.[stop_at] 
-FROM msdb.dbo.restorehistory r1
-INNER JOIN msdb.dbo.backupset bs ON bs.backup_set_id = r1.backup_set_id
-INNER JOIN msdb.dbo.backupmediafamily bmf ON bs.media_set_id = bmf.media_set_id
-WHERE ((r1.destination_database_name like @DBName) or (@DBName is NULL))
-AND ((bs.type = 'D') or  (@FullBackupsOnly = 0))
-ORDER by r1.restore_date DESC;
+    SELECT TOP 1000 r1.destination_database_name AS [Restored Database]
+        ,r1.restore_date AS [Restore Date]
+        ,bmf.physical_device_name AS [Backup File Restored]
+        ,CASE bs.[type]
+            WHEN 'D'
+                THEN 'Full'
+            WHEN 'I'
+                THEN 'Differential'
+            WHEN 'L'
+                THEN 'Transaction Log'
+            ELSE 'Not Known'
+            END AS [Backup File Type]
+        ,r1.[stop_at]
+    FROM msdb.dbo.restorehistory r1
+    INNER JOIN msdb.dbo.backupset bs ON bs.backup_set_id = r1.backup_set_id
+    INNER JOIN msdb.dbo.backupmediafamily bmf ON bs.media_set_id = bmf.media_set_id
+    WHERE (
+            (r1.destination_database_name LIKE @DBName)
+            OR (@DBName IS NULL)
+            )
+        AND (
+            (bs.type = 'D')
+            OR (@FullBackupsOnly = 0)
+            )
+    ORDER BY r1.restore_date DESC;
 END
-
 GO
+
+
