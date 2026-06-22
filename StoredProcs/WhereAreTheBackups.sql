@@ -45,7 +45,7 @@ BEGIN
         ,CONVERT(DECIMAL(18, 2), (bs.backup_size) / 1024 / 1024 / 1024) AS [Size in GB]
         ,CONVERT(DECIMAL(18, 2), (bs.compressed_backup_size) / 1024 / 1024) AS [Compressed Size in MB]
         ,CONVERT(DECIMAL(18, 2), (bs.compressed_backup_size) / 1024 / 1024 / 1024) AS [Compressed Size in GB]
-        ,CAST(DATEDIFF(second, bs.backup_start_date, bs.backup_finish_date) AS VARCHAR(4)) + ' ' + 'Seconds' AS [Time Taken]
+        ,CAST(DATEDIFF(second, bs.backup_start_date, bs.backup_finish_date) AS VARCHAR(8)) + ' ' + 'Seconds' AS [Time Taken]
         ,bs.backup_start_date AS [Backup Started]
         ,CAST(bs.first_lsn AS VARCHAR(50)) AS [First LSN]
         ,CAST(bs.last_lsn AS VARCHAR(50)) AS [Last LSN]
