@@ -1,17 +1,15 @@
-USE [master]
-GO
+USE [master];
 
+GO
 /* ------ -- ------- -- ------ ------ ----
    script to install or update stored proc 
    ------ -- ------- -- ------ ------ ---- */
-IF EXISTS (
-        SELECT 1
-        FROM sys.procedures
-        WHERE name = 'sp_WhereAreTheBackups'
-        )
-    DROP PROC [sp_WhereAreTheBackups]
-GO
+IF EXISTS (SELECT 1
+           FROM   sys.procedures
+           WHERE  name = 'sp_WhereAreTheBackups')
+    DROP PROCEDURE [sp_WhereAreTheBackups];
 
+GO
 /* =====================================================================================
    https://github.com/markwdavies/SQLServerUtilities/StoredProcs
    
@@ -33,43 +31,28 @@ GO
    Usage :		EXEC sp_WhereAreTheBackups
 				@DBName = 'MyDB' , @FullBackupsOnly = 1
    ===================================================================================== */
-CREATE PROCEDURE [dbo].[sp_WhereAreTheBackups] (
-    @DBName NVARCHAR(128) = NULL
-    ,@FullBackupsOnly BIT = 0
-    )
+CREATE PROCEDURE [dbo].[sp_WhereAreTheBackups]
+@DBName NVARCHAR (128)=NULL, @FullBackupsOnly BIT=0
 AS
 BEGIN
-    SELECT TOP 1000 bs.database_name AS [Database Name]
-        ,bmf.physical_device_name AS [Backup File]
-        ,CONVERT(DECIMAL(18, 2), (bs.backup_size) / 1024 / 1024) AS [Size in MB]
-        ,CONVERT(DECIMAL(18, 2), (bs.backup_size) / 1024 / 1024 / 1024) AS [Size in GB]
-        ,CONVERT(DECIMAL(18, 2), (bs.compressed_backup_size) / 1024 / 1024) AS [Compressed Size in MB]
-        ,CONVERT(DECIMAL(18, 2), (bs.compressed_backup_size) / 1024 / 1024 / 1024) AS [Compressed Size in GB]
-        ,CAST(DATEDIFF(second, bs.backup_start_date, bs.backup_finish_date) AS VARCHAR(8)) + ' ' + 'Seconds' AS [Time Taken]
-        ,bs.backup_start_date AS [Backup Started]
-        ,CAST(bs.first_lsn AS VARCHAR(50)) AS [First LSN]
-        ,CAST(bs.last_lsn AS VARCHAR(50)) AS [Last LSN]
-        ,CASE bs.[type]
-            WHEN 'D'
-                THEN 'Full'
-            WHEN 'I'
-                THEN 'Differential'
-            WHEN 'L'
-                THEN 'Transaction Log'
-            ELSE 'Not Known'
-            END AS [Backup Type]
-    FROM msdb.dbo.backupset bs
-    INNER JOIN msdb.dbo.backupmediafamily bmf ON bs.media_set_id = bmf.media_set_id
-    WHERE (
-            (bs.database_name LIKE @DBName)
-            OR (@DBName IS NULL)
-            )
-        AND (
-            (bs.type = 'D')
-            OR (@FullBackupsOnly = 0)
-            )
+    SELECT   TOP 1000 bs.database_name AS [Database Name],
+                      bmf.physical_device_name AS [Backup File],
+                      CONVERT (DECIMAL (18, 2), (bs.backup_size) / 1024 / 1024) AS [Size in MB],
+                      CONVERT (DECIMAL (18, 2), (bs.backup_size) / 1024 / 1024 / 1024) AS [Size in GB],
+                      CONVERT (DECIMAL (18, 2), (bs.compressed_backup_size) / 1024 / 1024) AS [Compressed Size in MB],
+                      CONVERT (DECIMAL (18, 2), (bs.compressed_backup_size) / 1024 / 1024 / 1024) AS [Compressed Size in GB],
+                      CAST (DATEDIFF(second, bs.backup_start_date, bs.backup_finish_date) AS VARCHAR (8)) + ' ' + 'Seconds' AS [Time Taken],
+                      bs.backup_start_date AS [Backup Started],
+                      CAST (bs.first_lsn AS VARCHAR (50)) AS [First LSN],
+                      CAST (bs.last_lsn AS VARCHAR (50)) AS [Last LSN],
+                      CASE bs.[type] WHEN 'D' THEN 'Full' WHEN 'I' THEN 'Differential' WHEN 'L' THEN 'Transaction Log' ELSE 'Not Known' END AS [Backup Type]
+    FROM     msdb.dbo.backupset AS bs
+             INNER JOIN
+             msdb.dbo.backupmediafamily AS bmf
+             ON bs.media_set_id = bmf.media_set_id
+    WHERE    ((bs.database_name LIKE @DBName)
+              OR (@DBName IS NULL))
+             AND ((bs.type = 'D')
+                  OR (@FullBackupsOnly = 0))
     ORDER BY backup_start_date DESC;
 END
-GO
-
-

@@ -1,4 +1,6 @@
-USE [master]
+USE [master];
+
+
 GO
 /* ------ -- ------- ------ -----
    script to remove  stored procs 
@@ -12,9 +14,32 @@ GO
                   this repository
 
    ===================================================================================== */
-IF EXISTS (SELECT 1 FROM sys.procedures WHERE name = 'sp_WhatWasRestored') DROP PROC [sp_WhatWasRestored] ;
-IF EXISTS (SELECT 1 FROM sys.procedures WHERE name = 'sp_WhereAreTheBackups') DROP PROC [sp_WhereAreTheBackups] ;
-IF EXISTS (SELECT 1 FROM sys.procedures WHERE name = 'sp_WhereAreTheFiles') DROP PROC [sp_WhereAreTheFiles] ;
-IF EXISTS (SELECT 1 FROM sys.procedures WHERE name = 'sp_WhatIsRunning') DROP PROC [sp_WhatIsRunning] ;
-IF EXISTS (SELECT 1 FROM sys.procedures WHERE name = 'sp_WhatWasBackedUp') DROP PROC [sp_WhatWasBackedUp] ;
-IF EXISTS (SELECT 1 FROM sys.procedures WHERE name = 'WhatIsUsingTempDB') DROP PROC [WhatIsUsingTempDB] ;
+IF EXISTS (SELECT 1
+           FROM   sys.procedures
+           WHERE  name = 'sp_WhatWasRestored')
+    DROP PROCEDURE [sp_WhatWasRestored];
+
+IF EXISTS (SELECT 1
+           FROM   sys.procedures
+           WHERE  name = 'sp_WhereAreTheBackups')
+    DROP PROCEDURE [sp_WhereAreTheBackups];
+
+IF EXISTS (SELECT 1
+           FROM   sys.procedures
+           WHERE  name = 'sp_WhereAreTheFiles')
+    DROP PROCEDURE [sp_WhereAreTheFiles];
+
+IF EXISTS (SELECT 1
+           FROM   sys.procedures
+           WHERE  name = 'sp_WhatIsRunning')
+    DROP PROCEDURE [sp_WhatIsRunning];
+
+IF EXISTS (SELECT 1
+           FROM   sys.procedures
+           WHERE  name = 'sp_WhatWasBackedUp')
+    DROP PROCEDURE [sp_WhatWasBackedUp];
+
+IF EXISTS (SELECT 1
+           FROM   sys.procedures
+           WHERE  name = 'WhatIsUsingTempDB')
+    DROP PROCEDURE [WhatIsUsingTempDB];
